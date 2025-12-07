@@ -7,6 +7,6 @@ common.hello();
 import es from "./es.js";
 es.hello();
 
-import fs from "fs";
+import boxen from "boxen";
 
-fs.writeFileSync("text.txt", "Hello");
+console.log(boxen("unicorn", {padding: 1}));
