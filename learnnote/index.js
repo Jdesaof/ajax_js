@@ -10,3 +10,7 @@ es.hello();
 import fs from "fs";
 
 fs.writeFileSync("test.txt", "Hello file!!!");
+
+import boxen from 'boxen';
+
+console.log(boxen('unicorn', {padding: 1}));
