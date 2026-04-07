@@ -3,3 +3,9 @@ $bgcolor: green;
 body {
     background: color.scale($bgcolor, $lightness: 30%);
 }
+
+nav {
+    background: coral;
+    height: 50px;
+    width: 100%;
+}
