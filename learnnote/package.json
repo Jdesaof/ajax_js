@@ -5,7 +5,7 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
-    "vite": "^7.2.6"
+    "vite": "^8.0.6"
   },
   "peerDependencies": {
     "typescript": "^5"
