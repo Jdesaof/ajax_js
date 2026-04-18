@@ -2,28 +2,27 @@
 import { ref } from 'vue';
 import Tabs from './components/Tabs.vue';
 
+import ToDo from './pages/ToDo.vue';
+import Modals from './pages/Modals.vue';
+
 let tabTitles = ref([
-  'Title 1',
-  'Title 2',
-  'Title 3',
-  'Title 4',
-])
+  'ToDo',
+  'Modals',
+]);
 
 let tabActive = ref(0);
 
-let contents = ref([
-  'Content 1',
-  'Content 2',
-  'Content 3',
-  'Content 4',
-])
+let contents = [
+  ToDo,
+  Modals,
+];
 
 </script>
 
 <template>
+  <Tabs :titles="tabTitles" :active="tabActive" @setActive="tabActive = $event"></Tabs>
   <div class="container">
-    <Tabs :titles="tabTitles" :active="tabActive" @setActive="tabActive = $event"></Tabs>
-    <p>{{ contents[tabActive] }}</p>
+    <component :is="contents[tabActive]"></component>
   </div>
 </template>
 

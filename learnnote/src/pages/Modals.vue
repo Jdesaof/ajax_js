@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import Modal from './components/Modal.vue';
-import ImgModal from './components/ImgModal.vue';
+import Modal from '../components/Modal.vue';
+import ImgModal from '../components/ImgModal.vue';
 
 let modal1Active = ref(false);
 let modal2Active = ref(false);
