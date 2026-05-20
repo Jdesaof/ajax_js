@@ -1,14 +1,21 @@
 import { createApp } from 'vue';
-import { createMemoryHistory, createWebHashHistory, createWebHistory, createRouter } from 'vue-router';
+import {
+  createWebHashHistory,
+  createRouter
+} from 'vue-router';
+
+import 'bulma/css/bulma.min.css';
 
 import ToDo from './pages/ToDo.vue';
 import Modals from './pages/Modals.vue';
 import Messages from './pages/Messages.vue';
+import Buttons from './pages/Buttons.vue';
 
 const routes = [
-  { path: '/', component: ToDo, name: "ToDo" },
-  { path: '/modals', component: Modals, name: "Modals" },
-  { path: '/messages', component: Messages, name: "Messages" },
+  { path: '/', component: ToDo, name: 'ToDo' },
+  { path: '/modals', component: Modals, name: 'Modals' },
+  { path: '/messages', component: Messages, name: 'Messages' },
+  { path: '/buttons', component: Buttons, name: 'Buttons' },
 ];
 
 export const router = createRouter({
@@ -16,9 +23,8 @@ export const router = createRouter({
   routes,
 });
 
-
-
-// import the root component App from a single-file component.
 import App from './App.vue';
 
-const app = createApp(App).use(router).mount("#app");
+createApp(App)
+  .use(router)
+  .mount('#app');
