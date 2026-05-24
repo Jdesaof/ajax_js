@@ -11,6 +11,7 @@ import Modals from './pages/Modals.vue';
 import Messages from './pages/Messages.vue';
 import Buttons from './pages/Buttons.vue';
 import ChuckNorris from './pages/ChuckNorris.vue';
+import CatFacts from './pages/CatFacts.vue'
 
 const routes = [
   { path: '/', component: ToDo, name: 'ToDo' },
@@ -18,6 +19,7 @@ const routes = [
   { path: '/messages', component: Messages, name: 'Messages' },
   { path: '/buttons', component: Buttons, name: 'Buttons' },
   { path: '/chuck', component: ChuckNorris, name: 'Chuck Norris' },
+  { path: '/catfacts', component: CatFacts, name: 'Cat Facts' },
 ];
 
 export const router = createRouter({
