@@ -12,14 +12,14 @@ function handleInput() {
 
 <template>
   <div class="field mb-5">
-    <label class="label">Search character</label>
+    <label class="label">Search character by name</label>
 
     <div class="control">
       <input
         v-model="query"
         class="input"
         type="text"
-        placeholder="Type a name"
+        placeholder="Type a character name..."
         @input="handleInput"
       />
     </div>

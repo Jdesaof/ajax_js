@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios';
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onBeforeUnmount } from 'vue';
 
 import CharacterCard from '../components/CharacterCard.vue';
 import PaginationBar from '../components/PaginationBar.vue';
@@ -25,6 +25,20 @@ const info = ref({
 
 const totalPages = computed(() => info.value.pages);
 
+let abortController = null;
+
+function debounce(fn, delay) {
+  let timerId = null;
+
+  return (...args) => {
+    clearTimeout(timerId);
+
+    timerId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
 async function scrollToCharactersTop() {
   await nextTick();
 
@@ -35,6 +49,13 @@ async function scrollToCharactersTop() {
 }
 
 async function fetchCharacters() {
+  if (abortController) {
+    abortController.abort();
+  }
+
+  const controller = new AbortController();
+  abortController = controller;
+
   isLoading.value = true;
   errorMessage.value = '';
   emptyMessage.value = '';
@@ -52,6 +73,7 @@ async function fetchCharacters() {
 
     const res = await axios.get('https://rickandmortyapi.com/api/character', {
       params,
+      signal: controller.signal,
     });
 
     characters.value = res.data.results;
@@ -59,6 +81,10 @@ async function fetchCharacters() {
 
     await scrollToCharactersTop();
   } catch (error) {
+    if (error.code === 'ERR_CANCELED' || error.name === 'CanceledError') {
+      return;
+    }
+
     if (error.response?.status === 404) {
       characters.value = [];
 
@@ -76,7 +102,10 @@ async function fetchCharacters() {
 
     errorMessage.value = 'Failed to load characters.';
   } finally {
-    isLoading.value = false;
+    if (abortController === controller) {
+      isLoading.value = false;
+      abortController = null;
+    }
   }
 }
 
@@ -84,18 +113,24 @@ function changePage(page) {
   currentPage.value = page;
 }
 
-// Answer to the questions:
-// 1. While typing "morty", 5 API requests were made: one request for each typed character.
-// 2. If a slow request from keystroke 2 arrives after keystroke 5, it can overwrite the latest results with outdated data.
-// 3. This causes request flooding on the server and makes the user experience worse, because the UI may show results for an older query instead of the current one.
-function handleSearch(query) {
-  searchQuery.value = query;
-
+function runSearchFromFirstPage() {
   if (currentPage.value !== 1) {
     currentPage.value = 1;
   } else {
     fetchCharacters();
   }
+}
+
+const debouncedFetch = debounce(runSearchFromFirstPage, 400);
+
+// Answer to the questions:
+// 1. While typing "morty", 5 API requests were made: one request for each typed character.
+// 2. If a slow request from keystroke 2 arrives after keystroke 5, it can overwrite the latest results with outdated data.
+// 3. This causes request flooding on the server and makes the user experience worse, because the UI may show results for an older query instead of the current one.
+
+function handleSearch(query) {
+  searchQuery.value = query;
+  debouncedFetch();
 }
 
 watch(
@@ -105,6 +140,12 @@ watch(
   },
   { immediate: true }
 );
+
+onBeforeUnmount(() => {
+  if (abortController) {
+    abortController.abort();
+  }
+});
 </script>
 
 <template>
