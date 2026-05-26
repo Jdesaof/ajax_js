@@ -1,40 +1,104 @@
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
+
 import CharacterCard from '../components/CharacterCard.vue';
-let characters = ref([]);
-let info = ref({
-    count: 0,
-    pages: 0,
-    next: null,
-    prev: null,
+import PaginationBar from '../components/PaginationBar.vue';
+
+const characters = ref([]);
+const currentPage = ref(1);
+const isLoading = ref(false);
+const listTop = ref(null);
+
+const info = ref({
+  count: 0,
+  pages: 0,
+  next: null,
+  prev: null,
 });
 
-await getCharacters('https://rickandmortyapi.com/api/character');
+const totalPages = computed(() => info.value.pages);
 
-async function getCharacters(url) {
-    const res = await axios.get(url);
-    characters.value = res.data.results;
-    info.value = res.data.info;  
+async function getCharacters(page) {
+  isLoading.value = true;
+
+  console.log('Loading page:', page);
+
+  const res = await axios.get(
+    `https://rickandmortyapi.com/api/character?page=${page}`
+  );
+
+  characters.value = res.data.results;
+  info.value = res.data.info;
+
+  await nextTick();
+
+  listTop.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
+
+  isLoading.value = false;
 }
 
-async function next() {
-    await getCharacters(info.value.next);
+function changePage(page) {
+  currentPage.value = page;
 }
 
-async function prev() {
-    await getCharacters(info.value.prev);
-}
-
+watch(
+  currentPage,
+  (page) => {
+    getCharacters(page);
+  },
+  { immediate: true }
+);
 </script>
+
 <template>
-    <div class="is-flex is-justify-content-space-between mb-2">
-    <button class="button is-primary" :disabled="!info.prev" @click="prev">Prev</button>
-    <button class="button is-primary" :disabled="!info.next" @click="next">Next</button>
-</div>
-    <div class="columns is-multiline">
-        <div class="column" v-for="character in characters">
-            <CharacterCard :character="character"></CharacterCard>
-        </div>
+  <div ref="listTop"></div>
+
+<PaginationBar
+  :current-page="currentPage"
+  :total-pages="totalPages"
+  :disabled="isLoading"
+  @page-change="changePage"
+/>
+
+<p v-if="isLoading" class="has-text-centered my-4">
+  Loading...
+</p>
+
+<p v-else-if="errorMessage" class="notification is-danger">
+  {{ errorMessage }}
+</p>
+
+<Transition v-else name="fade" mode="out-in">
+  <div :key="currentPage" class="columns is-multiline">
+    <div
+      class="column is-one-quarter"
+      v-for="character in characters"
+      :key="character.id"
+    >
+      <CharacterCard :character="character" />
     </div>
+  </div>
+</Transition>
+
+  <PaginationBar
+    :current-page="currentPage"
+    :total-pages="totalPages"
+    @page-change="changePage"
+  />
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
