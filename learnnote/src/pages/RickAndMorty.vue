@@ -84,6 +84,10 @@ function changePage(page) {
   currentPage.value = page;
 }
 
+// Answer to the questions:
+// 1. While typing "morty", 5 API requests were made: one request for each typed character.
+// 2. If a slow request from keystroke 2 arrives after keystroke 5, it can overwrite the latest results with outdated data.
+// 3. This causes request flooding on the server and makes the user experience worse, because the UI may show results for an older query instead of the current one.
 function handleSearch(query) {
   searchQuery.value = query;
 

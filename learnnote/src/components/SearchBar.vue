@@ -5,26 +5,23 @@ const emit = defineEmits(['search']);
 
 const query = ref('');
 
-function submitSearch() {
+function handleInput() {
   emit('search', query.value);
 }
 </script>
 
 <template>
-  <form class="field has-addons mb-5" @submit.prevent="submitSearch">
-    <div class="control is-expanded">
+  <div class="field mb-5">
+    <label class="label">Search character</label>
+
+    <div class="control">
       <input
         v-model="query"
         class="input"
         type="text"
-        placeholder="Search character"
+        placeholder="Type a name"
+        @input="handleInput"
       />
     </div>
-
-    <div class="control">
-      <button class="button is-primary" type="submit">
-        Search
-      </button>
-    </div>
-  </form>
+  </div>
 </template>
