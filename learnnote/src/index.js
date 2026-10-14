@@ -15,7 +15,7 @@ import CatFacts from './pages/CatFacts.vue'
 import RickAndMorty from './pages/RickAndMorty.vue';
 import CanvasExample from './pages/CanvasExample.vue';
 import WebApis from './pages/WebApis.vue';
-import FullscreenDemo from './pages/FullscreenDemo.vue';
+import WebAudioDemo from './pages/WebAudioDemo.vue';
 
 const routes = [
   { path: '/', component: ToDo, name: 'ToDo' },
@@ -27,7 +27,7 @@ const routes = [
   { path: '/rickandmorty', component: RickAndMorty, name: 'Rick And Morty' },
   { path: '/canvas', component: CanvasExample, name: 'Canvas' },
   { path: '/webapis', component: WebApis, name: 'WebApis' },
-  { path: '/fullscreen', component: FullscreenDemo, name: 'Fullscreen Demo' },
+  { path: '/webaudio', component: WebAudioDemo, name: 'Web Audio Demo' },
 ];
 
 export const router = createRouter({
