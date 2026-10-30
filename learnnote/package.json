@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy": "bun run build && cp ./dist/index.html ./dist/200.html && surge ./dist mihhailbur.surge.sh"
+    "build:surge": "vite build --base=/ --outDir dist-surge",
+    "deploy": "npm run build:surge && surge ./dist-surge jdesaof-ajax.surge.sh"
   },
   "devDependencies": {
     "@types/bun": "latest",
